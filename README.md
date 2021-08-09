@@ -1,1 +1,2 @@
-# kotlin-functional-adapter
+# Kotlin Functional Adapter
+
