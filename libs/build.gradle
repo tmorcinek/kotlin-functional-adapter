@@ -4,22 +4,18 @@ plugins {
     id 'maven-publish'
 }
 
-repositories {
-    mavenCentral()
-    google()
-    jcenter()
-    maven { url "https://jitpack.io" }
-}
-
-group = 'com.morcinek.android'
-version = '1.0'
-
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     buildTypes {
@@ -28,19 +24,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.recyclerview:recyclerview:1.2.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    api "androidx.recyclerview:recyclerview:1.2.1"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 }
 
 afterEvaluate {
