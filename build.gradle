@@ -23,9 +23,6 @@ allprojects {
 repositories {
     mavenCentral()
 }
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-}
 
 task clean(type: Delete) {
     delete rootProject.buildDir
