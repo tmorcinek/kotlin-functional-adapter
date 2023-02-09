@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.run {
             adapter = customAdapter {
+                item(R.layout.welcome) {}
                 itemView<RecyclerView>(R.layout.recycler_view) {
                     list<City>(itemCallback()) {
                         resId(R.layout.vh_city)
@@ -87,10 +88,11 @@ class MainActivity : AppCompatActivity() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "List"
-                1 -> "Grid"
-                2 -> "Strings"
-                3 -> "LiveData"
+                0 -> "Welcome"
+                1 -> "List"
+                2 -> "Grid"
+                3 -> "Strings"
+                4 -> "LiveData"
                 else -> "Sections"
             }
         }.attach()
