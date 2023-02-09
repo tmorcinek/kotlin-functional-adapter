@@ -2,15 +2,17 @@ package com.morcinek.adapter.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.morcinek.android.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.mutable_collections.view.*
 import kotlinx.android.synthetic.main.vh_city.view.*
-import kotlinx.android.synthetic.main.vh_city.view.name
-import kotlinx.android.synthetic.main.vh_name.view.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val namesLiveDate = MutableLiveData(names)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 itemView<RecyclerView>(R.layout.recycler_view) {
-                    list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }){
+                    list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }) {
                         resId(R.layout.vh_name)
                         onBind { _, item ->
                             name.text = item
@@ -50,42 +52,77 @@ class MainActivity : AppCompatActivity() {
                         submitList(names)
                     }
                 }
+                item {
+                    resId(R.layout.mutable_collections)
+                    onBind {
+                        add.setOnClickListener { namesLiveDate.postValue(namesLiveDate.value?.run { plus("Element nr. ${size + 1}") }) }
+                        recyclerView.list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }) {
+                            resId(R.layout.vh_name)
+                            onBind { _, item ->
+                                name.text = item
+                            }
+                            liveData(this@MainActivity, namesLiveDate)
+                        }
+                    }
+                }
+                itemView<RecyclerView>(R.layout.recycler_view) {
+                    setup {
+                        adapter(sectionsAdapter {
+                            section<Header>(R.layout.vh_name) { _, item ->
+                                name.text = item.title
+                            }
+                            section<City> {
+                                resId(R.layout.vh_city)
+                                onBindView { _, item ->
+                                    name.text = item.name
+                                }
+                            }
+                            grid(2) { setupSpanSizeLookup { position -> if (itemAtPositionIsClass<Header>(position)) 2 else 1 } }
+                            submitList(citiesWithHeaders())
+                        })
+                    }
+                }
             }
-
         }
+
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Cities List"
-                1 -> "Cities Grid"
-                2 -> "Names"
-                else -> "Other"
+                0 -> "List"
+                1 -> "Grid"
+                2 -> "Strings"
+                3 -> "LiveData"
+                else -> "Sections"
             }
         }.attach()
     }
 
-
-    private val cities = listOf(
-        City("Barcelona"),
-        City("Warsaw"),
-        City("Krakow"),
-        City("Madrid"),
-        City("Lisbon"),
-        City("Porto"),
-        City("Hamburg"),
-        City("London"),
-        City("Liverpool"),
-        City("Manchester"),
-        City("Paris"),
-        City("Milan"),
-        City("Turin"),
-        City("Moscow"),
-        City("Moscow"),
-    )
-
-    private val names = listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata", "Marek", "Grzegorz", "Mikolaj", "Wiktor")
+    private fun citiesWithHeaders(): List<HasKey> = cities.groupBy { it.name.first() }.flatMap { listOf(Header("${it.key}")).plus(it.value) }
 }
+
+private val cities = listOf(
+    City("Barcelona"),
+    City("Warsaw"),
+    City("Krakow"),
+    City("Madrid"),
+    City("Lisbon"),
+    City("Porto"),
+    City("Hamburg"),
+    City("London"),
+    City("Liverpool"),
+    City("Manchester"),
+    City("Paris"),
+    City("Milan"),
+    City("Turin"),
+    City("Moscow"),
+    City("Casablanca"),
+    City("Beirut"),
+)
+
+private val names = listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata", "Marek", "Grzegorz", "Mikolaj", "Wiktor")
 
 
 private class City(val name: String) : HasKey {
     override val key: String get() = name
 }
+
+private class Header(val title: String, override val key: String = title) : HasKey
