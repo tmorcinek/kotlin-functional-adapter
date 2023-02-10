@@ -158,11 +158,10 @@ recyclerView.setup {
 
 <br><br>
 
-## Developed By
+## Developer
 
-<p>Tomasz Morcinek</p>
 <p>Github:    <a href="https://github.com/tmorcinek">tmorcinek</a></p>
-<p>Linkedin:  <a href="https://www.linkedin.com/in/tmorcinek/">tmorcinek</a></p> 
+<p>Linkedin:  <a href="https://www.linkedin.com/in/tmorcinek/">Tomasz Morcinek</a></p> 
 <br><br>
 
 ## License
