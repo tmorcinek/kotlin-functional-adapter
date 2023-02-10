@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.vh_city.view.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val namesLiveDate = MutableLiveData(names)
+    private val namesLiveDate = MutableLiveData(listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,18 @@ class MainActivity : AppCompatActivity() {
                             number.text = "${position + 1}."
                             name.text = item.name
                         }
-                        submitList(cities)
+                        submitList(
+                            listOf(
+                                City("Barcelona"),
+                                City("Warsaw"),
+                                City("Krakow"),
+                                City("Madrid"),
+                                City("Lisbon"),
+                                City("Porto"),
+                                City("Hamburg"),
+                                City("London"),
+                            )
+                        )
                     }
                 }
                 itemView<RecyclerView>(R.layout.recycler_view) {
@@ -40,13 +51,18 @@ class MainActivity : AppCompatActivity() {
                                 number.text = "${position + 1}."
                                 name.text = item.name
                             }
-                            submitList(listOf(
-                                City("Barcelona"),
-                                City("Warsaw"),
-                                City("Krakow"),
-                                City("Madrid"),
-                                City("Lisbon"),
-                            ))
+                            submitList(
+                                listOf(
+                                    City("Barcelona"),
+                                    City("Warsaw"),
+                                    City("Krakow"),
+                                    City("Madrid"),
+                                    City("Lisbon"),
+                                    City("Porto"),
+                                    City("Hamburg"),
+                                    City("London"),
+                                )
+                            )
                         })
                     }
                 }
@@ -56,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                         onBind { _, item ->
                             name.text = item
                         }
-                        submitList(names)
+                        submitList(listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata", "Marek", "Grzegorz", "Mikolaj", "Wiktor"))
                     }
                 }
                 item {
@@ -85,11 +101,13 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                             grid(2) { setupSpanSizeLookup { position -> if (itemAtPositionIsClass<Header>(position)) 2 else 1 } }
-                            submitList(listOf(
-                                Header("B"), City("Barcelona"), City("Beirut"),
-                                Header("W"), City("Warsaw"),
-                                Header("M"), City("Madrid"), City("Manchester"), City("Milan"), City("Moscow"),
-                            ))
+                            submitList(
+                                listOf(
+                                    Header("B"), City("Barcelona"), City("Beirut"),
+                                    Header("W"), City("Warsaw"),
+                                    Header("M"), City("Madrid"), City("Manchester"), City("Milan"), City("Moscow"),
+                                )
+                            )
                         })
                     }
                 }
@@ -97,13 +115,13 @@ class MainActivity : AppCompatActivity() {
                     setup {
                         linear()
                         adapter(customAdapter {
-                            item(R.layout.vh_name) { name.text = "B"}
-                            item(R.layout.vh_city) { name.text = "Barcelona"}
-                            item(R.layout.vh_city) { name.text = "Beirut"}
-                            item(R.layout.vh_name) { name.text = "W"}
-                            item(R.layout.vh_city) { name.text = "Warsaw"}
-                            item(R.layout.vh_name) { name.text = "K"}
-                            item(R.layout.vh_city) { name.text = "Krakow"}
+                            item(R.layout.vh_name) { name.text = "B" }
+                            item(R.layout.vh_city) { name.text = "Barcelona" }
+                            item(R.layout.vh_city) { name.text = "Beirut" }
+                            item(R.layout.vh_name) { name.text = "W" }
+                            item(R.layout.vh_city) { name.text = "Warsaw" }
+                            item(R.layout.vh_name) { name.text = "K" }
+                            item(R.layout.vh_city) { name.text = "Krakow" }
                         })
                     }
                 }
@@ -122,31 +140,7 @@ class MainActivity : AppCompatActivity() {
             }
         }.attach()
     }
-
-    private fun citiesWithHeaders(): List<HasKey> = cities.groupBy { it.name.first() }.flatMap { listOf(Header("${it.key}")).plus(it.value) }
 }
-
-private val cities = listOf(
-    City("Barcelona"),
-    City("Warsaw"),
-    City("Krakow"),
-    City("Madrid"),
-    City("Lisbon"),
-    City("Porto"),
-    City("Hamburg"),
-    City("London"),
-    City("Liverpool"),
-    City("Manchester"),
-    City("Paris"),
-    City("Milan"),
-    City("Turin"),
-    City("Moscow"),
-    City("Casablanca"),
-    City("Beirut"),
-)
-
-private val names = listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata", "Marek", "Grzegorz", "Mikolaj", "Wiktor")
-
 
 private class City(val name: String) : HasKey {
     override val key: String get() = name
