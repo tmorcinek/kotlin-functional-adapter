@@ -40,7 +40,13 @@ class MainActivity : AppCompatActivity() {
                                 number.text = "${position + 1}."
                                 name.text = item.name
                             }
-                            submitList(cities)
+                            submitList(listOf(
+                                City("Barcelona"),
+                                City("Warsaw"),
+                                City("Krakow"),
+                                City("Madrid"),
+                                City("Lisbon"),
+                            ))
                         })
                     }
                 }
@@ -79,7 +85,11 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                             grid(2) { setupSpanSizeLookup { position -> if (itemAtPositionIsClass<Header>(position)) 2 else 1 } }
-                            submitList(citiesWithHeaders())
+                            submitList(listOf(
+                                Header("B"), City("Barcelona"), City("Beirut"),
+                                Header("W"), City("Warsaw"),
+                                Header("M"), City("Madrid"), City("Manchester"), City("Milan"), City("Moscow"),
+                            ))
                         })
                     }
                 }

@@ -5,7 +5,7 @@
 <p>Developer:  Tomasz Morcinek</p>
 
 [![](https://jitpack.io/v/tmorcinek/kotlin-functional-adapter.svg)](https://jitpack.io/#tmorcinek/kotlin-functional-adapter)
-
+<br>
 
 ## Purpose
 Using in combination with android extensions it simplifies working with RecyclerView. This library provides a way to write adapters in a functional way. 
@@ -19,11 +19,11 @@ There are several different types of adapters to help in different needs:
 ```groovy
     implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
 ```
-<br><br>
+<br>
 
-## How it works
+## How it works <br>
 
-### List and Grid
+### List and Grid <br>
 
 #### List of strings supplied by **LiveData**
 ```kotlin
@@ -34,6 +34,9 @@ recyclerView.list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } })
     }
     liveData(lifecycleOwner, namesLiveDate)
 }
+
+// LiveData declaration
+private val namesLiveDate = MutableLiveData<List<String>>(names)
 ```
 <br><br>
 #### List of objects **City** 
@@ -55,7 +58,57 @@ recyclerView.list<City>(itemCallback()) {
         number.text = "${position + 1}."
         name.text = item.name
     }
-    submitList(cities)
+    submitList(listOf(
+        City("Barcelona"),
+        City("Warsaw"),
+        City("Krakow"),
+        City("Madrid"),
+        City("Lisbon"),
+    ))
 }
 ```
 <br><br>
+
+### Sections <br>
+We have to implement **HasKey** interface in our **Header** class
+```kotlin
+private class Header(val title: String, override val key: String = title) : HasKey
+```
+RecyclerView code:
+```kotlin
+recyclerView.setup {
+    adapter(sectionsAdapter {
+        section<Header>(R.layout.vh_name) { _, item ->
+            name.text = item.title
+        }
+        section<City> {
+            resId(R.layout.vh_city)
+            onBindView { _, item ->
+                name.text = item.name
+            }
+        }
+        grid(2) { setupSpanSizeLookup { position -> if (itemAtPositionIsClass<Header>(position)) 2 else 1 } }
+        submitList(listOf(
+            Header("B"), City("Barcelona"), City("Beirut"),
+            Header("W"), City("Warsaw"),
+            Header("M"), City("Madrid"), City("Manchester"), City("Milan"), City("Moscow"),
+        ))
+    })
+}
+```
+Sections can be declared in a simple or extended ways: 
+```kotlin
+// simple
+section<Header>(R.layout.vh_name) { _, item ->
+    name.text = item.title
+}
+// extended
+section<Header> {
+    resId(R.layout.vh_name)
+    onBindView { _, item ->
+        name.text = item.title
+    }
+}
+```
+<br><br>
+
