@@ -25,7 +25,7 @@ There are several different types of adapters to help in different needs:
 
 ### List and Grid <br>
 
-#### - List of strings supplied by 'LiveData'
+ - #### List of strings supplied by 'LiveData'
 ```kotlin
 recyclerView.list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }) {
     resId(R.layout.vh_name)
@@ -40,7 +40,7 @@ private val namesLiveDate = MutableLiveData(listOf("Tomek", "Basia", "Kamil", "K
 ```
 <br>
 
-#### - List of objects 'City' 
+ - #### List of objects 'City' 
 If we want to simplify code related to **itemCallback**
 ```kotlin
 itemCallback { areItemsTheSame { s, s2 -> s == s2 } }
