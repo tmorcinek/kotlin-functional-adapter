@@ -19,6 +19,17 @@ are several different types of adapters to help in different needs:
 
 ## Gradle
 
+Add it in your root build.gradle at the end of repositories:
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Add the dependency:
 ```groovy
     implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
 ```
@@ -172,7 +183,7 @@ recyclerView.setup {
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-       http:/``/www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
