@@ -93,6 +93,20 @@ class MainActivity : AppCompatActivity() {
                         })
                     }
                 }
+                itemView<RecyclerView>(R.layout.recycler_view) {
+                    setup {
+                        linear()
+                        adapter(customAdapter {
+                            item(R.layout.vh_name) { name.text = "B"}
+                            item(R.layout.vh_city) { name.text = "Barcelona"}
+                            item(R.layout.vh_city) { name.text = "Beirut"}
+                            item(R.layout.vh_name) { name.text = "W"}
+                            item(R.layout.vh_city) { name.text = "Warsaw"}
+                            item(R.layout.vh_name) { name.text = "K"}
+                            item(R.layout.vh_city) { name.text = "Krakow"}
+                        })
+                    }
+                }
             }
         }
 
@@ -103,7 +117,8 @@ class MainActivity : AppCompatActivity() {
                 2 -> "Grid"
                 3 -> "Strings"
                 4 -> "LiveData"
-                else -> "Sections"
+                5 -> "Sections"
+                else -> "Custom"
             }
         }.attach()
     }

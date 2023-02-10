@@ -15,17 +15,17 @@ There are several different types of adapters to help in different needs:
  - Custom - Defining each item. This is a static list where you declare elements one by one.
  <br><br>
  
-## Usage 
+## Gradle
 ```groovy
     implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
 ```
 <br>
 
-## How it works <br>
+## Usage <br>
 
 ### List and Grid <br>
 
-#### List of strings supplied by **LiveData**
+#### - List of strings supplied by 'LiveData'
 ```kotlin
 recyclerView.list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }) {
     resId(R.layout.vh_name)
@@ -36,10 +36,11 @@ recyclerView.list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } })
 }
 
 // LiveData declaration
-private val namesLiveDate = MutableLiveData<List<String>>(names)
+private val namesLiveDate = MutableLiveData(listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata"))
 ```
-<br><br>
-#### List of objects **City** 
+<br>
+
+#### - List of objects 'City' 
 If we want to simplify code related to **itemCallback**
 ```kotlin
 itemCallback { areItemsTheSame { s, s2 -> s == s2 } }
@@ -112,3 +113,20 @@ section<Header> {
 ```
 <br><br>
 
+### Custom <br>
+
+Declaring custom elements for static list
+```kotlin
+recyclerView.setup {
+    linear()
+    adapter(customAdapter {
+        item(R.layout.vh_name) { name.text = "B"}
+        item(R.layout.vh_city) { name.text = "Barcelona"}
+        item(R.layout.vh_city) { name.text = "Beirut"}
+        item(R.layout.vh_name) { name.text = "W"}
+        item(R.layout.vh_city) { name.text = "Warsaw"}
+        item(R.layout.vh_name) { name.text = "K"}
+        item(R.layout.vh_city) { name.text = "Krakow"}
+    })
+}
+```
