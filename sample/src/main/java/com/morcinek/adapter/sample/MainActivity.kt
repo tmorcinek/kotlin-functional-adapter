@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
                 adapter = customAdapter {
                     item(WelcomeBinding::inflate)
                     itemBinding(RecyclerViewBinding::inflate) {
-                        root.list<City, VhCityBinding>(itemCallback(), VhCityBinding::inflate) {
+                        root.list(itemCallback<City>(), VhCityBinding::inflate) {
                             onBind { position, item ->
                                 number.text = "${position + 1}."
                                 name.text = item.name
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                     item(MutableCollectionsBinding::inflate) {
                         onBind {
                             add.setOnClickListener { namesLiveDate.postValue(namesLiveDate.value?.run { plus("Element nr. ${size + 1}") }) }
-                            recyclerView.list<String, VhNameBinding>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }, VhNameBinding::inflate) {
+                            recyclerView.list(itemCallback<String> { areItemsTheSame { s, s2 -> s == s2 } }, VhNameBinding::inflate) {
                                 onBind { _, item ->
                                     name.text = item
                                 }
