@@ -9,8 +9,7 @@
 
 ## Purpose
 
-Using in combination with android extensions it simplifies working with RecyclerView. This library provides a way to write adapters in a functional way. There
-are several different types of adapters to help in different needs:
+Using in combination with **viewBinding**, it simplifies working with RecyclerView. This library provides a way to write adapters in a functional way. There are several different types of adapters to help in different needs:
 
 - List and Grid - Simple list of objects which have the same type. (supports LiveData)
 - Sections - List or grid with different types of objects. (supports LiveData)
@@ -34,6 +33,17 @@ Add the dependency:
 implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
 ```
 
+Enabling viewBinding in `app/build.gradle`:
+```groovy
+android {
+    ...
+    buildFeatures {
+        viewBinding true
+    }
+    ...
+}
+```
+
 <br>
 
 ## Usage <br>
@@ -43,16 +53,24 @@ implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
 - #### List of strings supplied by 'LiveData'
 
 ```kotlin
-recyclerView.list<String>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }) {
-    resId(R.layout.vh_name)
+recyclerView.list<String, VhNameBinding>(itemCallback { areItemsTheSame { s, s2 -> s == s2 } }, VhNameBinding::inflate) {
     onBind { _, item ->
         name.text = item
     }
-    liveData(lifecycleOwner, namesLiveDate)
+    liveData(this@MainActivity, namesLiveDate)
 }
 
 // LiveData declaration
 private val namesLiveDate = MutableLiveData(listOf("Tomek", "Basia", "Kamil", "Krzysiu", "Karolina", "Beata"))
+```
+Simpified Generic Types
+```kotlin
+recyclerView.list(itemCallback<String> { areItemsTheSame { s, s2 -> s == s2 } }, VhNameBinding::inflate) {
+    onBind { _, item ->
+        name.text = item
+    }
+    liveData(this@MainActivity, namesLiveDate)
+}
 ```
 
 <br>
@@ -76,8 +94,7 @@ private class City(val name: String) : HasKey {
 RecyclerView code:
 
 ```kotlin
-recyclerView.list<City>(itemCallback()) {
-    resId(R.layout.vh_city)
+recyclerView.list(itemCallback<City>(), VhCityBinding::inflate) {
     onBind { position, item ->
         number.text = "${position + 1}."
         name.text = item.name
@@ -109,12 +126,11 @@ RecyclerView code:
 ```kotlin
 recyclerView.setup {
     adapter(sectionsAdapter {
-        section<Header>(R.layout.vh_name) { _, item ->
+        sectionBinding(VhNameBinding::inflate) { _, item: Header ->
             name.text = item.title
         }
-        section<City> {
-            resId(R.layout.vh_city)
-            onBindView { _, item ->
+        section(VhCityBinding::inflate) {
+            onBind { _, item: City ->
                 name.text = item.name
             }
         }
@@ -134,13 +150,12 @@ Sections can be declared in a simple or extended ways:
 
 ```kotlin
 // simple
-section<Header>(R.layout.vh_name) { _, item ->
+sectionBinding(VhNameBinding::inflate) { _, item: Header ->
     name.text = item.title
 }
 // extended
-section<Header> {
-    resId(R.layout.vh_name)
-    onBindView { _, item ->
+section(VhNameBinding::inflate) {
+    onBind { _, item: Header ->
         name.text = item.title
     }
 }
@@ -156,13 +171,13 @@ Declaring custom elements for static list
 recyclerView.setup {
     linear()
     adapter(customAdapter {
-        item(R.layout.vh_name) { name.text = "B" }
-        item(R.layout.vh_city) { name.text = "Barcelona" }
-        item(R.layout.vh_city) { name.text = "Beirut" }
-        item(R.layout.vh_name) { name.text = "W" }
-        item(R.layout.vh_city) { name.text = "Warsaw" }
-        item(R.layout.vh_name) { name.text = "K" }
-        item(R.layout.vh_city) { name.text = "Krakow" }
+        itemBinding(VhNameBinding::inflate) { name.text = "B" }
+        itemBinding(VhCityBinding::inflate) { name.text = "Barcelona" }
+        itemBinding(VhCityBinding::inflate) { name.text = "Beirut" }
+        itemBinding(VhNameBinding::inflate) { name.text = "W" }
+        itemBinding(VhCityBinding::inflate) { name.text = "Warsaw" }
+        itemBinding(VhNameBinding::inflate) { name.text = "K" }
+        itemBinding(VhCityBinding::inflate) { name.text = "Krakow" }
     })
 }
 ```
