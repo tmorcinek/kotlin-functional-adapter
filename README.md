@@ -31,7 +31,7 @@ allprojects {
 
 Add the dependency:
 ```groovy
-    implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
+implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
 ```
 
 <br>

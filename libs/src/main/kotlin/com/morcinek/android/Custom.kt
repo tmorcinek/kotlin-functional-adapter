@@ -1,61 +1,47 @@
 package com.morcinek.android
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 
 fun customAdapter(body: CAdapter.() -> Unit) = CAdapter().apply(body)
 
-class CAdapter : RecyclerView.Adapter<ViewHolder>() {
+class CAdapter : RecyclerView.Adapter<BindingViewHolder<ViewBinding>>() {
 
-    private val itemsTypes = mutableListOf<CItem>()
+    private val itemsTypes = mutableListOf<CItem<ViewBinding>>()
 
-    fun item(body: CItem.() -> Unit) {
-        itemsTypes.add(CItem(itemCount).apply(body))
-    }
+    fun <B : ViewBinding> item(createBinding: (LayoutInflater, ViewGroup?, Boolean) -> B, body: CItem<B>.() -> Unit = {}) =
+        itemsTypes.add(CItem(createBinding).apply(body) as CItem<ViewBinding>)
 
-    fun item(resId: Int, onBind: View.() -> Unit) {
-        itemsTypes.add(CItem(itemCount).apply {
-            resId(resId)
-            onBind(onBind)
-        })
-    }
-    fun <T: View> itemView(resId: Int, onBindView: T.() -> Unit) {
-        itemsTypes.add(CItem(itemCount).apply {
-            resId(resId)
-            onBindView(onBindView)
-        })
-    }
+    fun <B : ViewBinding> itemBinding(createBinding: (LayoutInflater, ViewGroup?, Boolean) -> B, onBindView: B.(position: Int) -> Unit) =
+        item(createBinding) { onBind(onBindView) }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = itemsTypes[viewType].onCreateViewHolder(parent)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = itemsTypes[position].onBindViewHolder(holder)
+    override fun onBindViewHolder(holder: BindingViewHolder<ViewBinding>, position: Int) = itemsTypes[position].onBindViewHolder(holder, position)
 
     override fun getItemViewType(position: Int) = position
 
     override fun getItemCount() = itemsTypes.size
 }
 
-class CItem(val position: Int) {
+class CItem<B : ViewBinding>(private val createBinding: (LayoutInflater, ViewGroup?, Boolean) -> B) {
 
-    private var resId: Int = 0
-    private var onCreateView: ((ViewGroup) -> View) = { parent -> LayoutInflater.from(parent.context).inflate(resId, parent, false) }
-    private var onBind: (View.() -> Unit) = { }
+    private var onCreateView: (B.() -> Unit) = { }
+    private var onBindView: (B.(Int) -> Unit) = { }
 
-    fun resId(resId: Int) {
-        this.resId = resId
+    fun onCreateView(onCreateView: B.() -> Unit) {
+        this.onCreateView = onCreateView
     }
 
-    fun onBind(onBind: View.() -> Unit) {
-        this.onBind = onBind
+    fun onBind(onBindView: B.(position: Int) -> Unit) {
+        this.onBindView = onBindView
     }
 
-    fun <T: View> onBindView(onBindView: T.() -> Unit) {
-        this.onBind = onBindView as View.() -> Unit
-    }
+    internal fun onCreateViewHolder(parent: ViewGroup) =
+        BindingViewHolder(createBinding(LayoutInflater.from(parent.context), parent, false).apply(onCreateView))
 
-    internal fun onCreateViewHolder(parent: ViewGroup) = ViewHolder(onCreateView.invoke(parent))
-
-    internal fun onBindViewHolder(viewHolder: ViewHolder) = viewHolder.itemView.onBind()
+    internal fun onBindViewHolder(viewHolder: BindingViewHolder<B>, position: Int) = viewHolder.binding.onBindView(position)
 }
