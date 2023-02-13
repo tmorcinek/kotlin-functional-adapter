@@ -30,7 +30,7 @@ allprojects {
 
 Add the dependency in `app/build.gradle`:
 ```groovy
-implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.0'
+implementation 'com.github.tmorcinek:kotlin-functional-adapter:1.1'
 ```
 
 Enabling viewBinding in `app/build.gradle`:
