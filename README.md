@@ -111,6 +111,34 @@ recyclerView.list(itemCallback<City>(), VhCityBinding::inflate) {
 }
 ```
 
+<br>
+
+- #### Grid of objects 'City'
+
+```kotlin
+recyclerView.setup {
+    grid(2) { setupSpanSizeLookup { position -> if (position % 3 == 0) 2 else 1 } }
+    adapter(listAdapter<City, VhCityBinding>(itemCallback(), VhCityBinding::inflate) {
+        onBind { position, item ->
+            number.text = "${position + 1}."
+            name.text = item.name
+        }
+        submitList(
+            listOf(
+                City("Barcelona"),
+                City("Warsaw"),
+                City("Krakow"),
+                City("Madrid"),
+                City("Lisbon"),
+                City("Porto"),
+                City("Hamburg"),
+                City("London"),
+            )
+        )
+    })
+}
+```
+
 <br><br>
 
 ### Sections <br>
