@@ -31,6 +31,8 @@ class FSectionsAdapter : ListAdapter<HasKey, BindingViewHolder<ViewBinding>>(ite
 
     override fun onViewDetachedFromWindow(holder: BindingViewHolder<ViewBinding>) = sectionViewAdapters[holder.itemViewType]!!.onDetachViewHolder(holder)
 
+    override fun onViewAttachedToWindow(holder: BindingViewHolder<ViewBinding>) = sectionViewAdapters[holder.itemViewType]!!.onAttachViewHolder(holder)
+
     override fun getItemViewType(position: Int) = getItemViewTypeForClass(getItem(position).javaClass)
 
     private fun getItemViewTypeForClass(type: Class<*>) = type.hashCode()
@@ -55,6 +57,7 @@ class FSection<T, B : ViewBinding>(private val createBinding: (LayoutInflater, V
     private var onBindView: (B.(Int, T) -> Unit) = { _, _ -> }
     private var onBindPayloads: (B.(Int, T, MutableList<Any>) -> Unit) = { _, _, _ -> }
     private var onDetached: (B.() -> Unit) = { }
+    private var onAttached: (B.() -> Unit) = { }
 
 
     fun onCreateView(onCreateView: B.() -> Unit) {
@@ -73,6 +76,10 @@ class FSection<T, B : ViewBinding>(private val createBinding: (LayoutInflater, V
         this.onDetached = onDetached
     }
 
+    fun onAttached(onAttached: B.() -> Unit) {
+        this.onAttached = onAttached
+    }
+
     internal fun onCreateViewHolder(parent: ViewGroup) = BindingViewHolder(createBinding(LayoutInflater.from(parent.context), parent, false).apply(onCreateView))
 
     internal fun onBindViewHolder(viewHolder: BindingViewHolder<B>, item: T, position: Int) = viewHolder.binding.onBindView(position, item)
@@ -81,4 +88,5 @@ class FSection<T, B : ViewBinding>(private val createBinding: (LayoutInflater, V
         viewHolder.binding.onBindPayloads(position, item, payloads)
 
     internal fun onDetachViewHolder(viewHolder: BindingViewHolder<B>) = viewHolder.binding.onDetached()
+    internal fun onAttachViewHolder(viewHolder: BindingViewHolder<B>) = viewHolder.binding.onAttached()
 }
