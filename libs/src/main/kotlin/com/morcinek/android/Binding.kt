@@ -13,6 +13,7 @@ abstract class BAdapter<T, B : ViewBinding>(private val createBinding: (LayoutIn
     private var onCreateView: (B.() -> Unit) = { }
     private var onBindView: (B.(Int, T) -> Unit) = { _, _ -> }
     private var onBindPayloads: (B.(Int, T, MutableList<Any>) -> Unit) = { _, _, _ -> }
+    private var onAttached: (B.() -> Unit) = { }
     private var onDetached: (B.() -> Unit) = { }
 
     protected abstract fun getItem(position: Int): T
@@ -29,6 +30,10 @@ abstract class BAdapter<T, B : ViewBinding>(private val createBinding: (LayoutIn
         this.onBindPayloads = onBindPayloads
     }
 
+    fun onAttached(onAttached: B.() -> Unit) {
+        this.onAttached = onAttached
+    }
+
     fun onDetached(onDetached: B.() -> Unit) {
         this.onDetached = onDetached
     }
@@ -40,6 +45,8 @@ abstract class BAdapter<T, B : ViewBinding>(private val createBinding: (LayoutIn
     override fun onBindViewHolder(holder: BindingViewHolder<B>, position: Int, payloads: MutableList<Any>) =
         if (payloads.isEmpty()) onBindViewHolder(holder, position)
         else holder.binding.onBindPayloads(position, getItem(position), payloads)
+
+    override fun onViewAttachedToWindow(holder: BindingViewHolder<B>) = holder.binding.onAttached()
 
     override fun onViewDetachedFromWindow(holder: BindingViewHolder<B>) = holder.binding.onDetached()
 }
