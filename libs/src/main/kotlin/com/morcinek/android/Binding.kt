@@ -15,6 +15,7 @@ abstract class BAdapter<T, B : ViewBinding>(private val createBinding: (LayoutIn
     private var onBindPayloads: (B.(Int, T, MutableList<Any>) -> Unit) = { _, _, _ -> }
     private var onAttached: (B.() -> Unit) = { }
     private var onDetached: (B.() -> Unit) = { }
+    private var onRecycled: (B.() -> Unit) = { }
 
     protected abstract fun getItem(position: Int): T
 
@@ -38,6 +39,10 @@ abstract class BAdapter<T, B : ViewBinding>(private val createBinding: (LayoutIn
         this.onDetached = onDetached
     }
 
+    fun onRecycled(onRecycled: B.() -> Unit) {
+        this.onRecycled = onRecycled
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = BindingViewHolder(createBinding(LayoutInflater.from(parent.context), parent, false).apply(onCreateView))
 
     override fun onBindViewHolder(holder: BindingViewHolder<B>, position: Int) = holder.binding.onBindView(position, getItem(position))
@@ -49,4 +54,6 @@ abstract class BAdapter<T, B : ViewBinding>(private val createBinding: (LayoutIn
     override fun onViewAttachedToWindow(holder: BindingViewHolder<B>) = holder.binding.onAttached()
 
     override fun onViewDetachedFromWindow(holder: BindingViewHolder<B>) = holder.binding.onDetached()
+
+    override fun onViewRecycled(holder: BindingViewHolder<B>) = holder.binding.onRecycled()
 }
